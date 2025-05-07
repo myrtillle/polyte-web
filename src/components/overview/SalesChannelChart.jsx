@@ -4,10 +4,18 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 const COLORS = ["#6366F1", "#8B5CF6", "#EC4899", "#10B981", "#F59E0B"];
 
 const SALES_CHANNEL_DATA = [
-	{ name: "Website", value: 45600 },
-	{ name: "Mobile App", value: 38200 },
-	{ name: "Marketplace", value: 29800 },
-	{ name: "Social Media", value: 18700 },
+	{ name: "Purok 1", value: 4560 },
+	{ name: "Purok 2", value: 3800 },
+	{ name: "Purok 3", value: 2980 },
+	{ name: "Purok 4", value: 1870 },
+	{ name: "Purok 5", value: 1870 },
+	{ name: "Purok 6", value: 4343 },
+	{ name: "Purok 7", value: 5764 },
+	{ name: "Purok 8", value: 4545 },
+	{ name: "Purok 9", value: 7457 },
+	{ name: "Purok 10", value: 3568 },
+	{ name: "Purok 11", value: 3785 },
+	{ name: "Purok 12", value: 3455 },
 ];
 
 const SalesChannelChart = () => {
@@ -18,7 +26,7 @@ const SalesChannelChart = () => {
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ delay: 0.4 }}
 		>
-			<h2 className='text-lg font-medium mb-4 text-gray-100'>Sales by Channel</h2>
+			<h2 className='text-lg font-medium mb-4 text-gray-100'>Collections by Purok</h2>
 
 			<div className='h-80'>
 				<ResponsiveContainer>
