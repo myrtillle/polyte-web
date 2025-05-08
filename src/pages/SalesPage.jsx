@@ -1,56 +1,255 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-
 import Header from "../components/common/Header";
 import StatCard from "../components/common/StatCard";
-import { CreditCard, DollarSign, ShoppingCart, TrendingUp } from "lucide-react";
-import SalesOverviewChart from "../components/sales/SalesOverviewChart";
-import SalesByCategoryChart from "../components/sales/SalesByCategoryChart";
-import DailySalesTrend from "../components/sales/DailySalesTrend";
+import { Plus, Star, Award, Trophy } from "lucide-react";
+import RewardCard from "../components/rewards/RewardCard";
+import AddRewardModal from "../components/rewards/AddRewardModal";
+import EditRewardModal from "../components/rewards/EditRewardModal";
+import { rewardsService } from "../services/rewardsService";
+import ClaimedRewardsTable from "../components/rewards/ClaimedRewardsTable";
 
-const salesStats = {
-	totalRevenue: "$1,234,567",
-	averageOrderValue: "$78.90",
-	conversionRate: "3.45%",
-	salesGrowth: "12.3%",
+const RewardsPage = () => {
+  const [rewards, setRewards] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [currentReward, setCurrentReward] = useState(null);
+  const [activeTab, setActiveTab] = useState("rewards");
+  const [claimedRewards, setClaimedRewards] = useState([]);
+
+  const fetchRewards = async () => {
+    try {
+      const data = await rewardsService.fetchRewards();
+      setRewards(data);
+    } catch (error) {
+      console.error("Failed to fetch rewards:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRewards();
+  }, []);
+
+  //
+  //            REWARDS            //
+  //
+  const handleSaveReward = async (rewardData) => {
+	try {
+	  console.log('Reward data before saving:', rewardData); // 👈 add this!
+  
+	  await rewardsService.createReward({
+		...rewardData,
+		barangay_id: '9cec46ba-c774-476e-ba03-d0fe0e086c79'
+	  });
+  
+	  fetchRewards();
+	} catch (error) {
+	  console.error("Failed to create reward:", error);
+	}
+  };
+
+  const handleDeleteReward = async (id) => {
+    try {
+      await rewardsService.deleteReward(id);
+      fetchRewards();
+    } catch (error) {
+      console.error("Failed to delete reward:", error);
+    }
+  };
+
+  const handleEditReward = (reward) => {
+    setCurrentReward(reward);
+    setEditModalOpen(true);
+  };
+  
+  const handleUpdateReward = async (updatedData) => {
+    try {
+      await rewardsService.updateReward(currentReward.id, updatedData);
+      fetchRewards();
+    } catch (error) {
+      console.error("Failed to update reward:", error);
+    }
+  };
+
+  //
+  //            CLAIMS            //
+  //
+  const fetchClaimedRewards = async () => {
+    try {
+      const data = await rewardsService.fetchClaimedRewards();
+      setClaimedRewards(data);
+    } catch (error) {
+      console.error("Failed to fetch claimed rewards:", error);
+    }
+  };
+  
+  const handleClaimReward = async (reward) => {
+    try {
+      const { data, error } = await supabase
+        .from('claimed_rewards')
+        .insert({
+          reward_id: reward.id,
+          barangay_id: reward.barangay_id, // assuming reward already carries barangay_id
+          status: 'pending',
+          claimed_at: new Date().toISOString(),
+        });
+  
+      if (error) throw error;
+  
+      alert('Reward claimed successfully!');
+      fetchClaimedRewards(); // refetch claims after adding
+    } catch (error) {
+      console.error("Failed to claim reward:", error);
+    }
+  };
+  
+  const approveClaim = async (claimId) => {
+    try {
+      const { data, error } = await supabase
+        .from('claimed_rewards')
+        .update({
+          status: 'approved',
+          approved_at: new Date().toISOString(),
+        })
+        .eq('id', claimId)
+        .select();
+  
+      if (error) throw error;
+      fetchClaimedRewards(); // refetch claims
+    } catch (error) {
+      console.error("Failed to approve claim:", error);
+    }
+  };
+  
+  const rejectClaim = async (claimId) => {
+    try {
+      const { data, error } = await supabase
+        .from('claimed_rewards')
+        .update({
+          status: 'rejected',
+        })
+        .eq('id', claimId)
+        .select();
+  
+      if (error) throw error;
+      fetchClaimedRewards(); // refetch claims
+    } catch (error) {
+      console.error("Failed to reject claim:", error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchClaimedRewards();
+  }, []);
+
+  return (
+    <div className="flex-1 overflow-auto relative z-10">
+      <Header title="Barangay Rewards Management" />
+
+      <main className="max-w-7xl mx-auto py-6 px-4 lg:px-8">
+        <motion.div
+          className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+        >
+          <StatCard name="Total Rewards" icon={Star} value={rewards.length} color="#6366F1" />
+          <StatCard
+            name="Most Expensive"
+            icon={Trophy}
+            value={
+              rewards.length > 0
+                ? `${Math.max(...rewards.map((r) => r.poly_points_required))} polys`
+                : "0 polys"
+            }
+            color="#F59E0B"
+          />
+          <StatCard
+            name="Cheapest Reward"
+            icon={Award}
+            value={
+              rewards.length > 0
+                ? `${Math.min(...rewards.map((r) => r.poly_points_required))} polys`
+                : "0 polys"
+            }
+            color="#10B981"
+          />
+        </motion.div>
+        
+        <button
+          onClick={() => setAddModalOpen(true)}
+          className="mt-6 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg text-center mb-8"
+        >
+          + Add Reward
+        </button>
+
+        <div className="flex">
+          {/* Sidebar */}
+          <div className="w-48 flex flex-col gap-4">
+            <button
+              onClick={() => setActiveTab("rewards")}
+              className={`px-6 py-3 rounded-lg font-semibold text-sm transition text-left ${
+                activeTab === "rewards"
+                  ? "bg-green-700 text-white"
+                  : "bg-green-100 text-green-900"
+              }`}
+            >
+              Rewards
+            </button>
+            <button
+              onClick={() => setActiveTab("claims")}
+              className={`px-6 py-3 rounded-lg font-semibold text-sm transition text-left ${
+                activeTab === "claims"
+                  ? "bg-green-700 text-white"
+                  : "bg-green-100 text-green-900"
+              }`}
+            >
+              Claims
+            </button>
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 ml-8">
+            {activeTab === "rewards" && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {rewards.map((reward) => (
+                  <RewardCard
+                    key={reward.id}
+                    reward={reward}
+                    onEdit={handleEditReward}
+                    onDelete={handleDeleteReward}
+                    onClaim={handleClaimReward}
+                    redeemCount={reward.claimed_count || 0}
+                  />
+                ))}
+              </div>
+            )}
+
+            {activeTab === "claims" && (
+              <ClaimedRewardsTable
+                claimedRewards={claimedRewards}
+                onApprove={approveClaim}
+                onReject={rejectClaim}
+              />
+            )}
+          </div>
+        </div>
+      </main>
+
+      <AddRewardModal 
+        isOpen={modalOpen} 
+        onClose={() => setModalOpen(false)} 
+        onSave={handleSaveReward} 
+      />
+
+      <EditRewardModal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        onSave={handleUpdateReward}
+        initialReward={currentReward}
+      />
+    </div>
+  );
 };
 
-const SalesPage = () => {
-	return (
-		<div className='flex-1 overflow-auto relative z-10'>
-			<Header title='Sales Dashboard' />
-
-			<main className='max-w-7xl mx-auto py-6 px-4 lg:px-8'>
-				{/* SALES STATS */}
-				<motion.div
-					className='grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8'
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 1 }}
-				>
-					<StatCard name='Total Revenue' icon={DollarSign} value={salesStats.totalRevenue} color='#6366F1' />
-					<StatCard
-						name='Avg. Order Value'
-						icon={ShoppingCart}
-						value={salesStats.averageOrderValue}
-						color='#10B981'
-					/>
-					<StatCard
-						name='Conversion Rate'
-						icon={TrendingUp}
-						value={salesStats.conversionRate}
-						color='#F59E0B'
-					/>
-					<StatCard name='Sales Growth' icon={CreditCard} value={salesStats.salesGrowth} color='#EF4444' />
-				</motion.div>
-
-				<SalesOverviewChart />
-
-				<div className='grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8'>
-					<SalesByCategoryChart />
-					<DailySalesTrend />
-				</div>
-			</main>
-		</div>
-	);
-};
-export default SalesPage;
+export default RewardsPage;
