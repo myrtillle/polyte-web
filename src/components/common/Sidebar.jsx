@@ -12,10 +12,13 @@ const SIDEBAR_ITEMS = [
 	},
 	{ name: "Plastic Items", icon: ShoppingBag, color: "#8B5CF6", href: "/products" },
 	{ name: "Users", icon: Users, color: "#EC4899", href: "/users" },
-	{ name: "Rewards", icon: DollarSign, color: "#10B981", href: "/rewads" },
+	{ name: "Rewards", icon: DollarSign, color: "#10B981", href: "/rewards" },
 	// { name: "Orders", icon: ShoppingCart, color: "#F59E0B", href: "/orders" },
 	{ name: "Analytics", icon: TrendingUp, color: "#3B82F6", href: "/analytics" },
+	{ name: "Barangay Analytics", icon: TrendingUp, color: "#3B82F6", href: "/brgy-analytics" },
+	{ name: "Leaderboards", icon: TrendingUp, color: "#3B82F6", href: "/leaderboards" },
 	{ name: "Settings", icon: Settings, color: "#6EE7B7", href: "/settings" },
+
 ];
 
 const Sidebar = () => {
