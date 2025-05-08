@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-const UserLeaderboard = ({ topUsers }) => {
+const UserLeaderboard = ({ topUsers, showPolys = false }) => {
   return (
     <motion.div
       className="bg-gray-800 bg-opacity-50 backdrop-blur-lg rounded-xl p-6 border border-gray-700 w-full"
@@ -16,7 +16,7 @@ const UserLeaderboard = ({ topUsers }) => {
               <th className="text-left py-2 px-4">#</th>
               <th className="text-left py-2 px-4">User</th>
               <th className="text-left py-2 px-4">Purok</th>
-              <th className="text-left py-2 px-4">Plastics (KG)</th>
+              <th className="text-left py-2 px-4">{showPolys ? "Poly Points" : "Plastics (KG)"}</th>
             </tr>
           </thead>
           <tbody>
@@ -27,7 +27,7 @@ const UserLeaderboard = ({ topUsers }) => {
                 </td>
                 <td className="py-2 px-4">{user.user_name}</td>
                 <td className="py-2 px-4">{user.purok_name}</td>
-                <td className="py-2 px-4">{user.total_plastics}</td>
+                <td className="py-2 px-4">{showPolys ? user.total_polys : user.total_plastics}</td>
               </tr>
             ))}
           </tbody>

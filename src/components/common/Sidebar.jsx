@@ -1,4 +1,4 @@
-import { BarChart2, DollarSign, Menu, Settings, ShoppingBag, ShoppingCart, TrendingUp, Users } from "lucide-react";
+import { BarChart2, Coins, CoinsIcon, DollarSign, Menu, Settings, ShoppingBag, ShoppingCart, TrendingUp, Trophy, Users } from "lucide-react";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -12,11 +12,11 @@ const SIDEBAR_ITEMS = [
 	},
 	{ name: "Plastic Items", icon: ShoppingBag, color: "#8B5CF6", href: "/products" },
 	{ name: "Users", icon: Users, color: "#EC4899", href: "/users" },
-	{ name: "Rewards", icon: DollarSign, color: "#10B981", href: "/rewards" },
+	{ name: "Rewards", icon: CoinsIcon, color: "#10B981", href: "/rewards" },
 	// { name: "Orders", icon: ShoppingCart, color: "#F59E0B", href: "/orders" },
 	{ name: "Analytics", icon: TrendingUp, color: "#3B82F6", href: "/analytics" },
 	{ name: "Barangay Analytics", icon: TrendingUp, color: "#3B82F6", href: "/brgy-analytics" },
-	{ name: "Leaderboards", icon: TrendingUp, color: "#3B82F6", href: "/leaderboards" },
+	{ name: "Leaderboards", icon: Trophy, color: "#3B82F6", href: "/leaderboards" },
 	{ name: "Settings", icon: Settings, color: "#6EE7B7", href: "/settings" },
 
 ];

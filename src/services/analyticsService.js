@@ -75,6 +75,15 @@ export const analyticsService = {
   
     if (error) throw error;
     return data || [];
+  },
+
+  async fetchTopUsersByPolys() {
+    const { data, error } = await supabase
+      .rpc('get_top_users_polypoints');
+  
+    if (error) throw error;
+    return data || [];
   }
+  
   
 };
