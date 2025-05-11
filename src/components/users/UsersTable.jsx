@@ -1,123 +1,168 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { format } from "date-fns";
+import { Eye, Edit, Trash2 } from "lucide-react";
+import ViewUserModal from "./ViewUserModal";
+import EditUserModal from "./EditUserModal";
+import DeleteUserModal from "./DeleteUserModal";
 
-const userData = [
-	{ id: 1, name: "John Doe", email: "john@example.com", role: "Customer", status: "Active" },
-	{ id: 2, name: "Jane Smith", email: "jane@example.com", role: "Admin", status: "Active" },
-	{ id: 3, name: "Bob Johnson", email: "bob@example.com", role: "Customer", status: "Inactive" },
-	{ id: 4, name: "Alice Brown", email: "alice@example.com", role: "Customer", status: "Active" },
-	{ id: 5, name: "Charlie Wilson", email: "charlie@example.com", role: "Moderator", status: "Active" },
-];
+const UsersTable = ({ users, onRefresh }) => {
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
-const UsersTable = () => {
-	const [searchTerm, setSearchTerm] = useState("");
-	const [filteredUsers, setFilteredUsers] = useState(userData);
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 5;
 
-	const handleSearch = (e) => {
-		const term = e.target.value.toLowerCase();
-		setSearchTerm(term);
-		const filtered = userData.filter(
-			(user) => user.name.toLowerCase().includes(term) || user.email.toLowerCase().includes(term)
-		);
-		setFilteredUsers(filtered);
-	};
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [modalType, setModalType] = useState(null); // "view" | "edit" | "delete"
+  
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
-	return (
-		<motion.div
-			className='bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border border-gray-700'
-			initial={{ opacity: 0, y: 20 }}
-			animate={{ opacity: 1, y: 0 }}
-			transition={{ delay: 0.2 }}
-		>
-			<div className='flex justify-between items-center mb-6'>
-				<h2 className='text-xl font-semibold text-gray-100'>Users</h2>
-				<div className='relative'>
-					<input
-						type='text'
-						placeholder='Search users...'
-						className='bg-gray-700 text-white placeholder-gray-400 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
-						value={searchTerm}
-						onChange={handleSearch}
-					/>
-					<Search className='absolute left-3 top-2.5 text-gray-400' size={18} />
-				</div>
-			</div>
+  const handleSearch = (e) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+    const filtered = users.filter(
+      (user) =>
+        `${user.first_name} ${user.last_name}`.toLowerCase().includes(term) ||
+        (user.email || "").toLowerCase().includes(term)
+    );
+    setFilteredUsers(filtered);
+    setCurrentPage(1); // reset pagination
+  };
 
-			<div className='overflow-x-auto'>
-				<table className='min-w-full divide-y divide-gray-700'>
-					<thead>
-						<tr>
-							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
-								Name
-							</th>
-							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
-								Email
-							</th>
-							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
-								Role
-							</th>
-							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
-								Status
-							</th>
-							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
-								Actions
-							</th>
-						</tr>
-					</thead>
+  useEffect(() => {
+    setFilteredUsers(users);
+  }, [users]);
 
-					<tbody className='divide-y divide-gray-700'>
-						{filteredUsers.map((user) => (
-							<motion.tr
-								key={user.id}
-								initial={{ opacity: 0 }}
-								animate={{ opacity: 1 }}
-								transition={{ duration: 0.3 }}
-							>
-								<td className='px-6 py-4 whitespace-nowrap'>
-									<div className='flex items-center'>
-										<div className='flex-shrink-0 h-10 w-10'>
-											<div className='h-10 w-10 rounded-full bg-gradient-to-r from-purple-400 to-blue-500 flex items-center justify-center text-white font-semibold'>
-												{user.name.charAt(0)}
-											</div>
-										</div>
-										<div className='ml-4'>
-											<div className='text-sm font-medium text-gray-100'>{user.name}</div>
-										</div>
-									</div>
-								</td>
+  const handleSort = (key) => {
+	setSortConfig((prev) => {
+	  if (prev.key === key) {
+		return { key, direction: prev.direction === "asc" ? "desc" : "asc" };
+	  }
+	  return { key, direction: "asc" };
+	});
+  };
+  
+  const sortedUsers = [...filteredUsers].sort((a, b) => {
+	if (!sortConfig.key) return 0;
+  
+	const aVal = a[sortConfig.key]?.toString().toLowerCase();
+	const bVal = b[sortConfig.key]?.toString().toLowerCase();
+  
+	if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
+	if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
+	return 0;
+  });
+  
+  const startIdx = (currentPage - 1) * usersPerPage;
+  const currentUsers = filteredUsers.slice(startIdx, startIdx + usersPerPage);
 
-								<td className='px-6 py-4 whitespace-nowrap'>
-									<div className='text-sm text-gray-300'>{user.email}</div>
-								</td>
-								<td className='px-6 py-4 whitespace-nowrap'>
-									<span className='px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-800 text-blue-100'>
-										{user.role}
-									</span>
-								</td>
+  const openModal = (type, user) => {
+    setSelectedUser(user);
+    setModalType(type);
+  };
 
-								<td className='px-6 py-4 whitespace-nowrap'>
-									<span
-										className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-											user.status === "Active"
-												? "bg-green-800 text-green-100"
-												: "bg-red-800 text-red-100"
-										}`}
-									>
-										{user.status}
-									</span>
-								</td>
+  const closeModal = () => {
+    setSelectedUser(null);
+    setModalType(null);
+  };
 
-								<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>
-									<button className='text-indigo-400 hover:text-indigo-300 mr-2'>Edit</button>
-									<button className='text-red-400 hover:text-red-300'>Delete</button>
-								</td>
-							</motion.tr>
-						))}
-					</tbody>
-				</table>
-			</div>
-		</motion.div>
-	);
+  return (
+    <>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold text-white">Users List</h2>
+        <input
+          type="text"
+          placeholder="Search users..."
+          value={searchTerm}
+          onChange={handleSearch}
+          className="px-3 py-2 rounded bg-gray-800 text-white border border-gray-700"
+        />
+      </div>
+
+      <div className="overflow-x-auto rounded-lg border border-green-700">
+        <table className="min-w-full bg-transparent text-green-50">
+          <thead className="bg-green-800/70 text-sm uppercase">
+            <tr>
+              <th className="py-3 px-6 text-left cursor-pointer" onClick={() => handleSort("first_name")}>
+				Name {sortConfig.key === "first_name" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+			  </th>
+              <th className="py-3 px-6 text-left cursor-pointer" onClick={() => handleSort("email")}>
+				Email {sortConfig.key === "email" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+			  </th>
+              <th className="py-3 px-6 text-left cursor-pointer" onClick={() => handleSort("purok")}>
+				Purok {sortConfig.key === "purok" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+			  </th>
+              <th className="py-3 px-6 text-left cursor-pointer" onClick={() => handleSort("created_at")}>
+				Joined {sortConfig.key === "created_at" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+			  </th>
+              <th className="py-3 px-6 text-left">Status</th>
+              <th className="py-3 px-6 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentUsers.length === 0 ? (
+              <tr>
+                <td colSpan="6" className="text-center text-gray-400 py-6">
+                  No users found.
+                </td>
+              </tr>
+            ) : (
+			  sortedUsers.map((user) => (
+                <tr key={user.id} className="hover:bg-green-900/30 transition">
+                  <td className="py-3 px-6">{user.first_name} {user.last_name}</td>
+                  <td className="py-3 px-6">{user.email}</td>
+                  <td className="py-3 px-6">{user.purok || "—"}</td>
+                  <td className="py-3 px-6">{format(new Date(user.created_at), "PP")}</td>
+                  <td className="py-3 px-6">
+                    <span className="inline-block px-3 py-1 text-xs bg-green-600 rounded-full">
+                      Active
+                    </span>
+                  </td>
+                  <td className="py-3 px-6 flex gap-2">
+                    <button onClick={() => openModal("view", user)} className="text-blue-400 hover:text-blue-300">
+                      <Eye size={18} />
+                    </button>
+                    <button onClick={() => openModal("edit", user)} className="text-yellow-400 hover:text-yellow-300">
+                      <Edit size={18} />
+                    </button>
+                    <button onClick={() => openModal("delete", user)} className="text-red-500 hover:text-red-400">
+                      <Trash2 size={18} />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-end mt-4 text-sm text-white gap-2">
+        {Array.from({ length: Math.ceil(filteredUsers.length / usersPerPage) }, (_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentPage(i + 1)}
+            className={`px-3 py-1 rounded ${
+              currentPage === i + 1 ? "bg-green-700 font-bold" : "bg-gray-800"
+            }`}
+          >
+            {i + 1}
+          </button>
+        ))}
+      </div>
+
+      {/* Modals */}
+      {modalType === "view" && selectedUser && (
+        <ViewUserModal user={selectedUser} onClose={closeModal} />
+      )}
+      {modalType === "edit" && selectedUser && (
+		<EditUserModal user={selectedUser} onClose={closeModal} onRefresh={onRefresh} />
+	  )}
+      {modalType === "delete" && selectedUser && (
+	    <DeleteUserModal user={selectedUser} onClose={closeModal} onRefresh={onRefresh} />
+	  )}
+    </>
+  );
 };
+
 export default UsersTable;

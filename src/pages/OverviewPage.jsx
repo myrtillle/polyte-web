@@ -1,40 +1,102 @@
+import { useEffect, useState } from "react";
 import { BarChart2, ShoppingBag, Users, Zap } from "lucide-react";
 import { motion } from "framer-motion";
+import { toPng } from 'html-to-image';
+import { useRef } from 'react';
 
 import Header from "../components/common/Header";
 import StatCard from "../components/common/StatCard";
-import SalesOverviewChart from "../components/overview/SalesOverviewChart";
-import CategoryDistributionChart from "../components/overview/CategoryDistributionChart";
-import SalesChannelChart from "../components/overview/SalesChannelChart";
+import MonthlyPlasticsChart from "../components/overview/MonthlyPlasticsChart";
+import PlasticTypeChart from "../components/overview/PlasticTypeChart";
+import PlasticByPurokChart from "../components/overview/PlasticByPurokChart";
+import { overviewService } from "../services/overviewService";
 
 const OverviewPage = () => {
-	return (
-		<div className='flex-1 overflow-auto relative z-10'>
-			<Header title='Overview' />
+  const [stats, setStats] = useState(null);
+  const [monthlyData, setMonthlyData] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
+  const [purokData, setPurokData] = useState([]);
+  const [lastUpdated, setLastUpdated] = useState(null);
+  
+  const chartRef = useRef(null);
+  const monthlyPlasticRef = useRef(null);
+  const plasticTypeRef = useRef(null);
+  const plasticByPurok = useRef(null);
 
-			<main className='max-w-7xl mx-auto py-6 px-4 lg:px-8'>
-				{/* STATS */}
-				<motion.div
-					className='grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8'
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 1 }}
-				>
-					<StatCard name='Total Sacks Collected' icon={Zap} value='1013' color='#6366F1' />
-					<StatCard name='Total Users' icon={Users} value='310' color='#8B5CF6' />
-					<StatCard name='Total Transfers Done' icon={ShoppingBag} value='193' color='#EC4899' />
-					<StatCard name='Collection Success Rate' icon={BarChart2} value='87.54%' color='#10B981' />
-				</motion.div>
+  useEffect(() => {
+    const fetchData = async () => {
+      const stats = await overviewService.fetchStats();
+      const monthly = await overviewService.fetchMonthlyOverview();
+      const category = await overviewService.fetchPlasticTypeDistribution();
+      const sacks = await overviewService.fetchSacksPerPurok();
 
-				{/* CHARTS */}
+      setStats(stats);
+      setMonthlyData(monthly);
+      setCategoryData(category);
+      setPurokData(sacks);
+	  setLastUpdated(new Date());
+    };
 
-				<div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-					<SalesOverviewChart />
-					<CategoryDistributionChart />
-					<SalesChannelChart />
-				</div>
-			</main>
-		</div>
-	);
+    fetchData();
+  }, []);
+
+  const handleDownloadImage = () => {
+	if (!chartRef.current) return;
+	toPng(chartRef.current).then((dataUrl) => {
+	  const link = document.createElement('a');
+	  link.download = 'overview-chart.png';
+	  link.href = dataUrl;
+	  link.click();
+	});
+  };
+
+  return (
+    <div className="flex-1 overflow-auto relative z-10">
+      <Header title="Overview" />
+
+      <main className="max-w-7xl mx-auto py-6 px-4 lg:px-8">
+		{lastUpdated && (
+			<p className="text-sm text-gray-400 text-right mb-2">
+				Last updated: {lastUpdated.toLocaleString()}
+			</p>
+		)}
+        {stats && (
+          <motion.div
+            className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+          >
+            <StatCard name="Total Sacks Collected" icon={Zap} value={stats.totalSacks} color="#6366F1" />
+            <StatCard name="Total Users" icon={Users} value={stats.totalUsers} color="#8B5CF6" />
+            <StatCard name="Total Transfers Done" icon={ShoppingBag} value={stats.totalTransfers} color="#EC4899" />
+            <StatCard name="Collection Success Rate" icon={BarChart2} value={stats.successRate} color="#10B981" />
+          </motion.div>
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+			<div ref={chartRef} className="relative">
+				<MonthlyPlasticsChart data={monthlyData} />
+				<button onClick={handleDownloadImage} className="absolute top-2 right-2 text-xs bg-white px-2 py-1 rounded shadow">
+					⬇ Export PNG
+				</button>
+			</div>
+			<div ref={chartRef} className="relative">
+				<PlasticTypeChart data={categoryData} />
+				<button onClick={handleDownloadImage} className="absolute top-2 right-2 text-xs bg-white px-2 py-1 rounded shadow">
+					⬇ Export PNG
+				</button>
+			</div>
+			<div ref={chartRef} className="relative">
+				<PlasticByPurokChart data={purokData} />	
+				<button onClick={handleDownloadImage} className="absolute top-2 right-2 text-xs bg-white px-2 py-1 rounded shadow">
+					⬇ Export PNG
+				</button>
+			</div>
+        </div>
+      </main>
+    </div>
+  );
 };
+
 export default OverviewPage;

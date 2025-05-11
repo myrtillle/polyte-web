@@ -20,36 +20,55 @@ const BrgyAnalyticsPage = () => {
   const [topPuroks, setTopPuroks] = useState([]);
   const [postCategories, setPostCategories] = useState([]);
 
-
+  // date range
+  const [plasticsRange, setPlasticsRange] = useState("month");
+  const [collectionRange, setCollectionRange] = useState("month");
+  const [usersRange, setUsersRange] = useState("month");
+  const [puroksRange, setPuroksRange] = useState("month");
+  const [categoriesRange, setCategoriesRange] = useState("month");
+  
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
+        console.log("📦 Fetching Analytics:");
+        
         const plastics = await analyticsService.fetchTotalPlastics();
         const lastMonth = await analyticsService.fetchLastMonthPlastics();
         const users = await analyticsService.fetchActiveUsers();
         const claims = await analyticsService.fetchTotalClaims();
-        const monthly = await analyticsService.fetchMonthlyPlastics();
-        const modes = await analyticsService.fetchCollectionModeDistribution();
-        const topUsersData = await analyticsService.fetchTopUsersCollected();
-        const topPuroksData = await analyticsService.fetchTopPuroksCollected();
-        const postCategoriesData = await analyticsService.fetchPostCategoryDistribution();
-
+  
+        console.log("📈 MonthlyPlastics →", plasticsRange);
+        const monthly = await analyticsService.fetchMonthlyPlastics(plasticsRange);
+  
+        console.log("🥡 CollectionMode →", collectionRange);
+        const modes = await analyticsService.fetchCollectionModeDistribution(collectionRange);
+  
+        console.log("🧁 PostCategory →", categoriesRange);
+        const postCategoriesData = await analyticsService.fetchPostCategoryDistribution(categoriesRange);
+  
+        console.log("🏘 TopPuroks →", puroksRange);
+        const topPuroksData = await analyticsService.fetchTopPuroksCollected(puroksRange);
+  
+        console.log("👤 TopUsers →", usersRange);
+        const topUsersData = await analyticsService.fetchTopUsersCollected(usersRange);
+  
         setTotalPlastics(plastics);
         setLastMonthPlastics(lastMonth);
         setActiveUsers(users);
         setTotalClaims(claims);
         setMonthlyPlastics(monthly);
         setCollectionModes(modes);
-        setTopUsers(topUsersData);
-        setTopPuroks(topPuroksData);
         setPostCategories(postCategoriesData);
+        setTopPuroks(topPuroksData);
+        setTopUsers(topUsersData);
       } catch (error) {
-        console.error("Error fetching analytics:", error);
+        console.error("❌ Error fetching analytics:", error);
       }
     };
-
+  
     fetchAnalytics();
-  }, []);
+  }, [plasticsRange, collectionRange, usersRange, puroksRange, categoriesRange]);
+  
 
   // Only plasticsChange is calculated for now
   const plasticsChange = lastMonthPlastics > 0
@@ -75,18 +94,45 @@ const BrgyAnalyticsPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <MonthlyPlastics monthlyPlastics={monthlyPlastics} />
+              <div className="relative">
+                <div className="flex justify-end mb-2">
+                  <select
+                    value={plasticsRange}
+                    onChange={(e) => setPlasticsRange(e.target.value)}
+                    className="bg-gray-800 text-white px-3 py-1 text-sm rounded border border-gray-600"
+                  >
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                    <option value="year">This Year</option>
+                  </select>
+                </div>
+                <MonthlyPlastics monthlyPlastics={monthlyPlastics} />
+              </div>
             </motion.div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {/* Collection Mode Pie Chart */}
+            
+            {/* Collection Mode Pie Chart */}
             <motion.div
               className="bg-gray-800 bg-opacity-50 backdrop-blur-lg rounded-xl p-6 border border-gray-700"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
             >
-              <CollectionMode collectionModes={collectionModes} />
+              <div className="relative">
+                <div className="flex justify-end mb-2">
+                  <select
+                    value={collectionRange}
+                    onChange={(e) => setCollectionRange(e.target.value)}
+                    className="bg-gray-800 text-white px-3 py-1 text-sm rounded border border-gray-600"
+                  >
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                    <option value="year">This Year</option>
+                  </select>
+                </div>
+                <CollectionMode collectionModes={ collectionModes } />
+              </div>
             </motion.div>
             
             {/* Post Category Distribution */}
@@ -95,8 +141,21 @@ const BrgyAnalyticsPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-            >
-              <PostCategory postCategories={postCategories} />
+            > 
+              <div className="relative">
+                <div className="flex justify-end mb-2">
+                  <select
+                    value={categoriesRange}
+                    onChange={(e) => setCategoriesRange(e.target.value)}
+                    className="bg-gray-800 text-white px-3 py-1 text-sm rounded border border-gray-600"
+                  >
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                    <option value="year">This Year</option>
+                  </select>
+                </div>
+                <PostCategory postCategories={postCategories} />
+              </div>
             </motion.div>
             </div>
 
@@ -107,9 +166,23 @@ const BrgyAnalyticsPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-            >
-              <TopPuroks topPuroks={topPuroks} />
+            > 
+              <div className="relative">
+                <div className="flex justify-end mb-2">
+                  <select
+                    value={puroksRange}
+                    onChange={(e) => setPuroksRange(e.target.value)}
+                    className="bg-gray-800 text-white px-3 py-1 text-sm rounded border border-gray-600"
+                  >
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                    <option value="year">This Year</option>
+                  </select>
+                </div>
+                <TopPuroks topPuroks={topPuroks} />
+              </div>
             </motion.div>
+
               {/* Top Users Bar Chart */}
               <motion.div
                 className="bg-gray-800 bg-opacity-50 backdrop-blur-lg rounded-xl p-6 border border-gray-700"
@@ -117,7 +190,20 @@ const BrgyAnalyticsPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0. }}
               >
-                <TopUsers topUsers={topUsers} />
+                <div className="relative">
+                  <div className="flex justify-end mb-2">
+                    <select
+                      value={usersRange}
+                      onChange={(e) => setUsersRange(e.target.value)}
+                      className="bg-gray-800 text-white px-3 py-1 text-sm rounded border border-gray-600"
+                    >
+                      <option value="week">This Week</option>
+                      <option value="month">This Month</option>
+                      <option value="year">This Year</option>
+                    </select>
+                  </div>
+                  <TopUsers topUsers={topUsers} />
+                </div>
               </motion.div>
             </div>
 
