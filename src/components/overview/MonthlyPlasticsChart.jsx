@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
+import { useState } from "react";
 
 const MonthlyPlasticsChart = ({ data }) => {
 	const [dateRange, setDateRange] = useState("month");

@@ -57,7 +57,7 @@ const LeaderboardsPage = () => {
   }, [selectedTimeRange, selectedLeaderboard, selectedMetric]); // <-- Important: add dependencies!
 
   return (
-    <div className="flex-1 overflow-auto relative z-10 bg-gray-900">
+    <div className="flex-1 overflow-auto relative z-10 bg-mainGreen">
       <main className="max-w-5xl mx-auto py-8 px-4 lg:px-8 space-y-8">
         {/* Title */}
         <motion.h1
@@ -72,7 +72,7 @@ const LeaderboardsPage = () => {
         {/* Dropdowns */}
         <div className="flex justify-center flex-wrap gap-4 mb-6">
           <select
-            className="bg-gray-800 text-white text-sm py-2 px-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="bg-green-900 text-white text-sm py-2 px-4 rounded-lg border border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
             value={selectedLeaderboard}
             onChange={(e) => setSelectedLeaderboard(e.target.value)}
           >
@@ -81,7 +81,7 @@ const LeaderboardsPage = () => {
           </select>
 
           <select
-            className="bg-gray-800 text-white text-sm py-2 px-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="bg-green-900 text-white text-sm py-2 px-4 rounded-lg border border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
             value={selectedMetric}
             onChange={(e) => setSelectedMetric(e.target.value)}
           >
@@ -90,7 +90,7 @@ const LeaderboardsPage = () => {
           </select>
 
           <select
-            className="bg-gray-800 text-white text-sm py-2 px-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="bg-green-900 text-white text-sm py-2 px-4 rounded-lg border border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
             value={selectedTimeRange}
             onChange={(e) => setSelectedTimeRange(e.target.value)}
           >

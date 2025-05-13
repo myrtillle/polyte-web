@@ -8,7 +8,7 @@ const RewardCard = ({ reward, onEdit, onDelete, redeemCount  }) => {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
       whileHover={{ scale: 1.05 }}
-      className="bg-green-200 shadow-md rounded-lg p-4 mb-4"
+      className="relative bg-green-200 shadow-md rounded-lg p-4 mb-4"
     >
        <div className="absolute top-2 right-2 flex gap-2">
         <button onClick={() => onEdit(reward)} className="text-blue-500 hover:text-blue-700">

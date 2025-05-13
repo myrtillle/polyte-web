@@ -30,20 +30,22 @@ const Header = ({ title }) => {
 
 	return (
 		<header className='bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg border-b border-gray-700'>
-			<div className='max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8'>
-				<h1 className='text-2xl font-semibold text-gray-100'>{title}</h1>
-				{userInfo && (
-					<p className="text-sm text-gray-300">
-						{userInfo.contact_name} – {userInfo.barangays.name}
-					</p>
-				)}	 
+			<div className='max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row sm:items-center sm:justify-between'>
+				<div>
+					<h1 className='text-2xl font-semibold text-gray-100'>{title}</h1>
+					{userInfo && (
+						<p className="text-sm text-gray-300">
+							{userInfo.contact_name} – {userInfo.barangays.name}
+						</p>
+					)}
+				</div>
+				<button
+					onClick={handleLogout}
+					className="mt-4 sm:mt-0 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm"
+				>
+					Logout
+				</button>
 			</div>
-			<button
-				onClick={handleLogout}
-				className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm"
-			>
-				Logout
-			</button>
 		</header>
 	);
 };

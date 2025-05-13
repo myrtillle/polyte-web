@@ -57,7 +57,7 @@ function App() {
 			<Route
 				path="/"
 				element={
-					session ? <Navigate to="/analytics" /> : <Navigate to="/login" />
+					session ? <Navigate to="/overview" /> : <Navigate to="/login" />
 				}
 			/>	
 				<Route path='/login' element={<LoginPage />}/>
