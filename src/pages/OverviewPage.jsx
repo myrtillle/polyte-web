@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { BarChart2, ShoppingBag, Users, Zap } from "lucide-react";
 import { motion } from "framer-motion";
-import { toPng } from 'html-to-image';
-import { useRef } from 'react';
+import { toPng } from "html-to-image";
 
 import Header from "../components/common/Header";
 import StatCard from "../components/common/StatCard";
@@ -17,11 +16,8 @@ const OverviewPage = () => {
   const [categoryData, setCategoryData] = useState([]);
   const [purokData, setPurokData] = useState([]);
   const [lastUpdated, setLastUpdated] = useState(null);
-  
+
   const chartRef = useRef(null);
-  const monthlyPlasticRef = useRef(null);
-  const plasticTypeRef = useRef(null);
-  const plasticByPurok = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,32 +30,33 @@ const OverviewPage = () => {
       setMonthlyData(monthly);
       setCategoryData(category);
       setPurokData(sacks);
-	  setLastUpdated(new Date());
+      setLastUpdated(new Date());
     };
 
     fetchData();
   }, []);
 
   const handleDownloadImage = () => {
-	if (!chartRef.current) return;
-	toPng(chartRef.current).then((dataUrl) => {
-	  const link = document.createElement('a');
-	  link.download = 'overview-chart.png';
-	  link.href = dataUrl;
-	  link.click();
-	});
+    if (!chartRef.current) return;
+    toPng(chartRef.current).then((dataUrl) => {
+      const link = document.createElement("a");
+      link.download = "overview-chart.png";
+      link.href = dataUrl;
+      link.click();
+    });
   };
 
   return (
-    <div className="flex-1 overflow-auto relative z-10">
+    <div className="flex-1 overflow-auto relative z-10 bg-white text-gray-900">
       <Header title="Overview" />
 
       <main className="max-w-7xl mx-auto py-6 px-4 lg:px-8">
-		{lastUpdated && (
-			<p className="text-sm text-gray-400 text-right mb-2">
-				Last updated: {lastUpdated.toLocaleString()}
-			</p>
-		)}
+        {lastUpdated && (
+          <p className="text-sm text-gray-500 text-right mb-2">
+            Last updated: {lastUpdated.toLocaleString()}
+          </p>
+        )}
+
         {stats && (
           <motion.div
             className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8"
@@ -75,24 +72,26 @@ const OverviewPage = () => {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-			<div ref={chartRef} className="relative">
-				<MonthlyPlasticsChart data={monthlyData} />
-				<button onClick={handleDownloadImage} className="absolute top-2 right-2 text-xs bg-white px-2 py-1 rounded shadow">
-					⬇ Export PNG
-				</button>
-			</div>
-			<div ref={chartRef} className="relative">
-				<PlasticTypeChart data={categoryData} />
-				<button onClick={handleDownloadImage} className="absolute top-2 right-2 text-xs bg-white px-2 py-1 rounded shadow">
-					⬇ Export PNG
-				</button>
-			</div>
-			<div ref={chartRef} className="relative">
-				<PlasticByPurokChart data={purokData} />	
-				<button onClick={handleDownloadImage} className="absolute top-2 right-2 text-xs bg-white px-2 py-1 rounded shadow">
-					⬇ Export PNG
-				</button>
-			</div>
+          <div ref={chartRef} className="relative bg-white p-4 rounded-lg shadow text-gray-900">
+            <MonthlyPlasticsChart data={monthlyData} />
+            <button onClick={handleDownloadImage} className="absolute top-2 right-2 text-xs bg-white px-2 py-1 rounded shadow">
+              ⬇ Export PNG
+            </button>
+          </div>
+
+          <div ref={chartRef} className="relative bg-white p-4 rounded-lg shadow text-gray-900">
+            <PlasticTypeChart data={categoryData} />
+            <button onClick={handleDownloadImage} className="absolute top-2 right-2 text-xs bg-white px-2 py-1 rounded shadow">
+              ⬇ Export PNG
+            </button>
+          </div>
+
+          <div ref={chartRef} className="relative bg-white p-4 rounded-lg shadow text-gray-900">
+            <PlasticByPurokChart data={purokData} />
+            <button onClick={handleDownloadImage} className="absolute top-2 right-2 text-xs bg-white px-2 py-1 rounded shadow">
+              ⬇ Export PNG
+            </button>
+          </div>
         </div>
       </main>
     </div>

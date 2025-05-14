@@ -41,7 +41,16 @@ function App() {
 	  
 
 	return (
-		 <div className={`flex h-screen ${(isLogin || isSignup) ? "bg-mainGreen" : "bg-mainGreen text-gray-100 overflow-hidden"}`}>
+		<div
+  className={`min-h-screen ${
+    isLogin || isSignup
+      ? "flex items-center justify-center bg-gradient-to-b from-white to-green-300"
+      : "flex bg-white text-gray-900"
+  }`}
+>
+
+
+
       {/* Only show blur + sidebar if NOT on login */}
       {!(isLogin || isSignup) && (
         <>
@@ -52,7 +61,6 @@ function App() {
           <Sidebar />
         </>
       )}
-
 			<Routes>
 			<Route
 				path="/"

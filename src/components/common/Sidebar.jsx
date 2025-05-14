@@ -1,76 +1,124 @@
-import { BarChart2, Coins, CoinsIcon, DollarSign, Menu, Settings, ShoppingBag, ShoppingCart, TrendingUp, Trophy, Users } from "lucide-react";
+import {
+  BarChart2,
+  CoinsIcon,
+  Menu,
+  Settings,
+  TrendingUp,
+  Trophy,
+  Users,
+  LogOut,
+} from "lucide-react";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const SIDEBAR_ITEMS = [
-	{
-		name: "Overview",
-		icon: BarChart2,
-		color: "#6366f1",
-		href: "/overview",
-	},
-	// { name: "Plastic Items", icon: ShoppingBag, color: "#8B5CF6", href: "/products" },
-	{ name: "Users", icon: Users, color: "#EC4899", href: "/users" },
-	{ name: "Rewards", icon: CoinsIcon, color: "#10B981", href: "/rewards" },
-	// { name: "Orders", icon: ShoppingCart, color: "#F59E0B", href: "/orders" },
-	// { name: "Analytics", icon: TrendingUp, color: "#3B82F6", href: "/analytics" },
-	{ name: "Barangay Analytics", icon: TrendingUp, color: "#3B82F6", href: "/brgy-analytics" },
-	{ name: "Leaderboards", icon: Trophy, color: "#3B82F6", href: "/leaderboards" },
-	{ name: "Settings", icon: Settings, color: "#6EE7B7", href: "/settings" },
-
+  { name: "OVERVIEW", icon: BarChart2, color: "#21E344", href: "/overview" },
+  { name: "USER", icon: Users, color: "#21E382", href: "/users" },
+  { name: "REWARDS", icon: CoinsIcon, color: "#10B981", href: "/rewards" },
+  { name: "BARANGAY ANALYTICS", icon: TrendingUp, color: "#0B7C57", href: "/brgy-analytics" },
+  { name: "LEADER BOARDS", icon: Trophy, color: "#076656", href: "/leaderboards" },
+  { name: "SETTINGS", icon: Settings, color: "#6B7280", href: "/settings" },
 ];
 
 const Sidebar = () => {
-	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const location = useLocation();
 
-	return (
-		<motion.div
-			className={`relative z-10 transition-all duration-300 ease-in-out flex-shrink-0 ${
-				isSidebarOpen ? "w-64" : "w-20"
-			}`}
-			animate={{ width: isSidebarOpen ? 256 : 80 }}
-		>
-			<div className='h-full bg-gray-800 bg-opacity-50 backdrop-blur-md p-4 flex flex-col border-r border-gray-700'>
-				<div className="flex items-center space-x-2">
-					<motion.button
-						whileHover={{ scale: 1.1 }}
-						whileTap={{ scale: 0.9 }}
-						onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-						className='p-2 rounded-full hover:bg-gray-700 transition-colors '
-					>
-						<Menu size={24} />
-						
-					</motion.button>	
-					{isSidebarOpen && (
-						<img src="/polyte-logo.png" alt="Logo" className="h-8 object-contain" />
-					)}
-				</div>	
-				
-				<nav className='mt-8 flex-grow'>
-					{SIDEBAR_ITEMS.map((item) => (
-						<Link key={item.href} to={item.href}>
-							<motion.div className='flex items-center p-4 text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors mb-2'>
-								<item.icon size={20} style={{ color: item.color, minWidth: "20px" }} />
-								<AnimatePresence>
-									{isSidebarOpen && (
-										<motion.span
-											className='ml-4 whitespace-nowrap'
-											initial={{ opacity: 0, width: 0 }}
-											animate={{ opacity: 1, width: "auto" }}
-											exit={{ opacity: 0, width: 0 }}
-											transition={{ duration: 0.2, delay: 0.3 }}
-										>
-											{item.name}
-										</motion.span>
-									)}
-								</AnimatePresence>
-							</motion.div>
-						</Link>
-					))}
-				</nav>
-			</div>
-		</motion.div>
-	);
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = "/login";
+  };
+
+  return (
+    <motion.div
+  className={`sticky top-0 h-screen z-10 transition-all duration-300 ease-in-out flex-shrink-0 ${
+    isSidebarOpen ? "w-64" : "w-20"
+  }`}
+  animate={{ width: isSidebarOpen ? 256 : 80 }}
+>
+
+      {/* Force full height and separate top and bottom */}
+      <div className="h-screen bg-white text-gray-900 shadow-md px-4 py-6 flex flex-col justify-between border-r border-gray-200">
+        
+        {/* Top Section: Collapse, Logo, Menu */}
+        <div>
+          {/* Collapse + Logo */}
+          <div className="flex items-center justify-start mb-8 gap-2">
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="p-3 rounded-full hover:bg-gray-100 transition-colors"
+            >
+              <Menu size={24} />
+            </motion.button>
+
+            <AnimatePresence>
+              {isSidebarOpen && (
+                <motion.img
+                  src="/polyte-logo.png"
+                  alt="Logo"
+                  className="h-4 object-contain"
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: "auto" }}
+                  exit={{ opacity: 0, width: 0 }}
+                  transition={{ duration: 0.2 }}
+                />
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Sidebar Items */}
+          <nav className="flex flex-col gap-2">
+            {SIDEBAR_ITEMS.map((item) => (
+              <Link key={item.href} to={item.href}>
+                <motion.div
+                  className={`flex items-center justify-center md:justify-start gap-4 p-3 text-xs font-medium 
+                    hover:bg-gray-100 transition-colors 
+                    ${
+                      location.pathname === item.href
+                        ? "border border-gray-400 rounded-xl bg-white"
+                        : ""
+                    }`}
+                >
+                  <item.icon
+                    size={22}
+                    style={{ color: item.color }}
+                    className="min-w-[22px]"
+                  />
+                  <AnimatePresence>
+                    {isSidebarOpen && (
+                      <motion.span
+                        className="whitespace-nowrap"
+                        initial={{ opacity: 0, width: 0 }}
+                        animate={{ opacity: 1, width: "auto" }}
+                        exit={{ opacity: 0, width: 0 }}
+                        transition={{ duration: 0.1, delay: 0.3 }}
+                      >
+                        {item.name}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              </Link>
+            ))}
+          </nav>
+        </div>
+
+        {/* Logout Button - pinned bottom */}
+        <div>
+          <button
+            onClick={handleLogout}
+            className="flex items-center justify-center md:justify-start gap-4 w-full p-3 text-xs font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+          >
+            <LogOut size={22} />
+            {isSidebarOpen && <span>LOG OUT</span>}
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
 };
+
 export default Sidebar;

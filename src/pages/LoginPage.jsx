@@ -34,23 +34,21 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-mainGreen flex items-center justify-center px-4">
-      <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-sm text-center">
-        {/* Logo Placeholder */}
-        <div className="mb-6">
-          <div className="w-24 h-24 mx-auto rounded-full bg-gray-300 flex items-center justify-center text-gray-500">
-            LOGO
-          </div>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-green-300 px-4">
+      <div className="bg-white rounded-xl shadow-md p-10 w-full max-w-md border border-gray-300 text-center">
+
+        {/* Actual Logo */}
+        <img src="/polyte-logo.png" alt="POLY.TE Logo" className="h-10 mx-auto mb-2" />
+        <p className="text-xs text-gray-600 mb-10">SHORT DESCRIPTION I CAN CHANGE LATER</p>
 
         <form onSubmit={handleLogin} className="space-y-4 text-left">
           <div>
             <input
               type="email"
-              placeholder="Email"
+              placeholder="EMAIL"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border rounded"
+              className="w-full px-4 py-2 bg-green-100 placeholder-gray-600 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
             />
             {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email}</p>}
           </div>
@@ -58,31 +56,31 @@ const LoginPage = () => {
           <div>
             <input
               type="password"
-              placeholder="Password"
+              placeholder="PASSWORD"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border rounded"
+              className="w-full px-4 py-2 bg-green-100 placeholder-gray-600 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
             />
             {errors.password && <p className="text-red-600 text-sm mt-1">{errors.password}</p>}
           </div>
 
-          {submitError && <p className="text-red-600 text-sm mt-1">{submitError}</p>}
+          {submitError && <p className="text-red-600 text-sm">{submitError}</p>}
 
           <button
             type="submit"
-            className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded font-semibold"
+            className="w-full bg-gray-800 hover:bg-gray-900 text-white py-2 rounded-lg text-lg font-bold"
           >
-            Log In
+            LOGIN
           </button>
         </form>
 
-        <div className="mt-4 text-sm text-gray-600 space-y-1 text-center">
+        <div className="mt-4 text-xs text-gray-600 text-center space-y-2">
           <p>
-            <a href="#" className="hover:underline">Forgot Password?</a>
+            <a href="#" className="hover:underline text-green-800">FORGOT PASSWORD?</a>
           </p>
           <p>
-            Don’t have an account?{" "}
-            <a href="/signup" className="text-green-700 font-semibold hover:underline">Sign Up</a>
+            DON'T HAVE AN ACCOUNT?{" "}
+            <a href="/signup" className="font-semibold text-green-800 hover:underline">SIGN UP</a>
           </p>
         </div>
       </div>
