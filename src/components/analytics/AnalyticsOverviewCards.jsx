@@ -20,12 +20,14 @@ const AnalyticsOverviewCards = ({ stats }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.1 }}
-            className="rounded-xl bg-gray-800 bg-opacity-50 backdrop-blur-lg p-6 border border-gray-700"
+           className="rounded-xl bg-white p-6 border border-gray-200 shadow-md"
+
           >
             <div className="flex justify-between items-center mb-4">
               <div>
-                <h2 className="text-sm font-medium text-gray-400">{stat.name}</h2>
-                <p className="text-2xl font-semibold text-gray-100">{stat.value}</p>
+                <h2 className="text-sm font-medium text-gray-500">{stat.name}</h2>
+                <p className="text-2xl font-semibold text-gray-900">{stat.value}</p>
+
               </div>
               <div className="rounded-full bg-green-700 p-3">
                 <Icon className="text-white w-5 h-5" />

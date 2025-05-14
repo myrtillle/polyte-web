@@ -16,16 +16,16 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-mainGreen flex items-center justify-center px-4">
-      <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-lg text-center">
-        <div className="mb-6">
-          <div className="w-24 h-24 mx-auto rounded-full bg-gray-300 flex items-center justify-center text-gray-500">
-            LOGO
-          </div>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-green-300 px-4">
+      <div className="bg-white rounded-xl shadow-md p-10 w-full max-w-xl border border-gray-300 text-center">
+        {/* Logo */}
+        <img src="/polyte-logo.png" alt="POLY.TE Logo" className="h-10 mx-auto mb-2" />
+        <p className="text-xs text-gray-600 mb-6">SHORT DESCRIPTION I CAN CHANGE LATER</p>
 
+        {/* Form */}
         <SignupForm onSubmit={handleSignup} />
 
+        {/* Navigation link */}
         <div className="mt-4 text-sm text-gray-600">
           Already have an account?{" "}
           <a href="/login" className="text-green-700 font-semibold hover:underline">Log In</a>

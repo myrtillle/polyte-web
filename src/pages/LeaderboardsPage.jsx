@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { analyticsService } from "../services/analyticsService";
 import UserLeaderboard from "../components/leaderboards/UserLeaderboard";
@@ -54,14 +54,14 @@ const LeaderboardsPage = () => {
     };
 
     fetchLeaderboards();
-  }, [selectedTimeRange, selectedLeaderboard, selectedMetric]); // <-- Important: add dependencies!
+  }, [selectedTimeRange, selectedLeaderboard, selectedMetric]);
 
   return (
-    <div className="flex-1 overflow-auto relative z-10 bg-mainGreen">
+    <div className="flex-1 overflow-auto relative z-10 bg-white text-gray-800">
       <main className="max-w-5xl mx-auto py-8 px-4 lg:px-8 space-y-8">
         {/* Title */}
         <motion.h1
-          className="text-2xl font-bold text-gray-100 mb-4"
+          className="text-2xl font-bold text-gray-800 mb-4"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -72,7 +72,7 @@ const LeaderboardsPage = () => {
         {/* Dropdowns */}
         <div className="flex justify-center flex-wrap gap-4 mb-6">
           <select
-            className="bg-green-900 text-white text-sm py-2 px-4 rounded-lg border border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="bg-green-100 text-green-900 text-sm py-2 px-4 rounded-lg border border-green-300 focus:outline-none focus:ring-2 focus:ring-green-400"
             value={selectedLeaderboard}
             onChange={(e) => setSelectedLeaderboard(e.target.value)}
           >
@@ -81,7 +81,7 @@ const LeaderboardsPage = () => {
           </select>
 
           <select
-            className="bg-green-900 text-white text-sm py-2 px-4 rounded-lg border border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="bg-green-100 text-green-900 text-sm py-2 px-4 rounded-lg border border-green-300 focus:outline-none focus:ring-2 focus:ring-green-400"
             value={selectedMetric}
             onChange={(e) => setSelectedMetric(e.target.value)}
           >
@@ -90,7 +90,7 @@ const LeaderboardsPage = () => {
           </select>
 
           <select
-            className="bg-green-900 text-white text-sm py-2 px-4 rounded-lg border border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="bg-green-100 text-green-900 text-sm py-2 px-4 rounded-lg border border-green-300 focus:outline-none focus:ring-2 focus:ring-green-400"
             value={selectedTimeRange}
             onChange={(e) => setSelectedTimeRange(e.target.value)}
           >
