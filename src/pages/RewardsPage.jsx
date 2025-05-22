@@ -85,16 +85,12 @@ const RewardsPage = () => {
   
   const handleClaimReward = async (reward) => {
     try {
-      const { data, error } = await supabase
-        .from('claimed_rewards')
-        .insert({
-          reward_id: reward.id,
-          barangay_id: reward.barangay_id, // assuming reward already carries barangay_id
-          status: 'pending',
-          claimed_at: new Date().toISOString(),
-        });
-  
-      if (error) throw error;
+      await rewardsService.createClaimedReward({
+        reward_id: reward.id,
+        barangay_id: reward.barangay_id,
+        status: 'pending',
+        claimed_at: new Date().toISOString(),
+      });
   
       alert('Reward claimed successfully!');
       fetchClaimedRewards(); // refetch claims after adding
@@ -105,16 +101,7 @@ const RewardsPage = () => {
   
   const approveClaim = async (claimId) => {
     try {
-      const { data, error } = await supabase
-        .from('claimed_rewards')
-        .update({
-          status: 'approved',
-          approved_at: new Date().toISOString(),
-        })
-        .eq('id', claimId)
-        .select();
-  
-      if (error) throw error;
+      await rewardsService.approveClaimedReward(claimId);
       fetchClaimedRewards(); // refetch claims
     } catch (error) {
       console.error("Failed to approve claim:", error);
@@ -123,15 +110,7 @@ const RewardsPage = () => {
   
   const rejectClaim = async (claimId) => {
     try {
-      const { data, error } = await supabase
-        .from('claimed_rewards')
-        .update({
-          status: 'rejected',
-        })
-        .eq('id', claimId)
-        .select();
-  
-      if (error) throw error;
+      await rewardsService.rejectClaimedReward(claimId);
       fetchClaimedRewards(); // refetch claims
     } catch (error) {
       console.error("Failed to reject claim:", error);

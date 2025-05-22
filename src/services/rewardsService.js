@@ -64,4 +64,41 @@ export const rewardsService = {
     return data;
   },
 
+  async approveClaimedReward(id) {
+    const { data, error } = await supabase
+      .from('claimed_rewards')
+      .update({
+        status: 'approved',
+        approved_at: new Date().toISOString()
+      })
+      .eq('id', id)
+      .select();
+
+    if (error) throw error;
+    return data?.[0];
+  },
+
+  async rejectClaimedReward(id) {
+    const { data, error } = await supabase
+      .from('claimed_rewards')
+      .update({
+        status: 'rejected',
+        approved_at: new Date().toISOString()
+      })
+      .eq('id', id)
+      .select();
+
+    if (error) throw error;
+    return data?.[0];
+  },
+
+  async createClaimedReward(claimData) {
+    const { data, error } = await supabase
+      .from('claimed_rewards')
+      .insert(claimData)
+      .select();
+
+    if (error) throw error;
+    return data?.[0];
+  },
 };

@@ -99,6 +99,16 @@ export const authService = {
         await supabase.auth.signOut();
         window.location.href = "/login";
     },
+
+    async forgotPassword(email) {
+        return await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + '/reset-password',
+        });
+    },
+
+    async resetPassword(newPassword) {
+        return await supabase.auth.updateUser({ password: newPassword });
+    },
 }
 
 
