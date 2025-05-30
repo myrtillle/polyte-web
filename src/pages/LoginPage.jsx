@@ -24,12 +24,15 @@ const LoginPage = () => {
 
     if (!validate()) return;
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
       setSubmitError("Invalid email or password.");
+    } else if (!data.user?.email_confirmed_at) {
+      setSubmitError("Please confirm your email address before logging in. Check your inbox for the confirmation link.");
+      await supabase.auth.signOut();
     } else {
-      navigate("/analytics");
+      navigate("/overview");
     }
   };
 

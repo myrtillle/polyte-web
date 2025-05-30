@@ -2,24 +2,45 @@ import { supabase } from "./supabaseClient";
 
 export const overviewService = {
   async fetchStats() {
-    const { data: sackData, error: sackError } = await supabase
+    // Get total sacks collected
+    const { count: totalSacks, error: sackError } = await supabase
       .from("offer_schedules")
-      .select("id", { count: "exact", head: true })
+      .select("*", { count: "exact", head: true })
       .eq("status", "completed");
 
-    const { data: users, error: userError } = await supabase
-      .from("personal_users")
-      .select("id", { count: "exact", head: true });
+    if (sackError) throw sackError;
 
-    const { data: transfers, error: transError } = await supabase
+    // Get total users
+    const { count: totalUsers, error: userError } = await supabase
+      .from("personal_users")
+      .select("*", { count: "exact", head: true });
+
+    if (userError) throw userError;
+
+    // Get total transfers (claimed rewards)
+    const { count: totalTransfers, error: transError } = await supabase
       .from("claimed_rewards")
-      .select("id", { count: "exact", head: true });
+      .select("*", { count: "exact", head: true })
+      .eq("status", "approved");
+
+    if (transError) throw transError;
+
+    // Calculate success rate based on completed offers vs total offers
+    const { count: totalOffers, error: offersError } = await supabase
+      .from("offer_schedules")
+      .select("*", { count: "exact", head: true });
+
+    if (offersError) throw offersError;
+
+    const successRate = totalOffers > 0 
+      ? ((totalSacks / totalOffers) * 100).toFixed(2) + "%"
+      : "0%";
 
     return {
-      totalSacks: sackData?.count || 0,
-      totalUsers: users?.count || 0,
-      totalTransfers: transfers?.count || 0,
-      successRate: "87.54%", // placeholder
+      totalSacks: totalSacks || 0,
+      totalUsers: totalUsers || 0,
+      totalTransfers: totalTransfers || 0,
+      successRate,
     };
   },
 
@@ -30,13 +51,16 @@ export const overviewService = {
     if (!data) return [];
 
     return data.map((item) => ({
-        name: (item.month_name || item.month || "Unknown").toString().slice(0, 3),
-        sales: item.total_kg || 0,
-      }));      
+      name: (item.month_name || item.month || "Unknown").toString().slice(0, 3),
+      sales: item.total_kg || 0,
+    }));      
   },
 
   async fetchPlasticTypeDistribution() {
-    const { data, error } = await supabase.from("offers").select("offered_items");
+    const { data, error } = await supabase
+      .from("offers")
+      .select("offered_items, offer_schedules!inner(status)")
+      .eq("offer_schedules.status", "completed");
 
     if (error) throw error;
     if (!data) return [];

@@ -8,8 +8,8 @@ const SignupPage = () => {
   const handleSignup = async (formData) => {
     try {
       await authService.signupBarangay(formData);
-      alert("Signup complete!");
-      navigate("/analytics");
+      alert("Signup successful! Please check your email to confirm your account before logging in.");
+      navigate("/login");
     } catch (error) {
       alert("Signup failed: " + error.message);
     }

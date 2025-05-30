@@ -8,6 +8,7 @@ const LeaderboardsPage = () => {
   const [topUsers, setTopUsers] = useState([]);
   const [topPuroks, setTopPuroks] = useState([]);
   const [topUsersByPolys, setTopUsersByPolys] = useState([]);
+  const [topPuroksByPolys, setTopPuroksByPolys] = useState([]);
   const [selectedLeaderboard, setSelectedLeaderboard] = useState('users');
   const [selectedMetric, setSelectedMetric] = useState('plastics');
   const [selectedTimeRange, setSelectedTimeRange] = useState('month');
@@ -42,12 +43,14 @@ const LeaderboardsPage = () => {
         const { dateFrom, dateTo } = getDateRange(selectedTimeRange);
 
         const topUsersData = await analyticsService.fetchTopUsersCollected(dateFrom, dateTo);
-        const topPuroksData = await analyticsService.fetchTopPuroksCollected(dateFrom, dateTo);
+        const topPuroksData = await analyticsService.fetchTopPuroksCollected(selectedTimeRange);
         const topUsersPolysData = await analyticsService.fetchTopUsersByPolys(dateFrom, dateTo);
+        const topPuroksPoly = await analyticsService.fetchTopPuroksByPolys(selectedTimeRange);
 
         setTopUsers(topUsersData);
         setTopPuroks(topPuroksData);
         setTopUsersByPolys(topUsersPolysData);
+        setTopPuroksByPolys(topPuroksPoly)
       } catch (error) {
         console.error("Error fetching leaderboards:", error);
       }
@@ -113,6 +116,10 @@ const LeaderboardsPage = () => {
 
           {selectedLeaderboard === 'puroks' && (
             <PurokLeaderboard topPuroks={topPuroks} />
+          )}
+
+          {selectedLeaderboard === 'puroks' && selectedMetric === 'polys' && (
+            <PurokLeaderboard topPuroks={topPuroksByPolys} showPolys />
           )}
         </div>
       </main>

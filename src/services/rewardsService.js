@@ -56,6 +56,10 @@ export const rewardsService = {
         *,
         rewards (
           reward_name
+        ),
+        personal_users (
+          first_name,
+          last_name
         )
       `)
       .order('claimed_at', { ascending: false });
@@ -96,6 +100,26 @@ export const rewardsService = {
     const { data, error } = await supabase
       .from('claimed_rewards')
       .insert(claimData)
+      .select();
+
+    if (error) throw error;
+    return data?.[0];
+  },
+
+  async fetchRewardTypes() {
+    const { data, error } = await supabase
+      .from('reward_types')
+      .select('*')
+      .order('type_name', { ascending: true });
+
+    if (error) throw error;
+    return data;
+  },
+
+  async createRewardType(typeName) {
+    const { data, error } = await supabase
+      .from('reward_types')
+      .insert({ type_name: typeName })
       .select();
 
     if (error) throw error;

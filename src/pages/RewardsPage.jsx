@@ -12,10 +12,13 @@ import ClaimedRewardsTable from "../components/rewards/ClaimedRewardsTable";
 const RewardsPage = () => {
   const [rewards, setRewards] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [currentReward, setCurrentReward] = useState(null);
   const [activeTab, setActiveTab] = useState("rewards");
   const [claimedRewards, setClaimedRewards] = useState([]);
+  const [rewardTypes, setRewardTypes] = useState([]);
+  const [newRewardType, setNewRewardType] = useState("");
 
   const fetchRewards = async () => {
     try {
@@ -26,8 +29,18 @@ const RewardsPage = () => {
     }
   };
 
+  const fetchRewardTypes = async () => {
+    try {
+      const data = await rewardsService.fetchRewardTypes();
+      setRewardTypes(data);
+    } catch (error) {
+      console.error("Failed to fetch reward types:", error);
+    }
+  };
+
   useEffect(() => {
     fetchRewards();
+    fetchRewardTypes();
   }, []);
 
   //
@@ -66,6 +79,7 @@ const RewardsPage = () => {
     try {
       await rewardsService.updateReward(currentReward.id, updatedData);
       fetchRewards();
+      console.log("update success.")
     } catch (error) {
       console.error("Failed to update reward:", error);
     }
@@ -121,6 +135,18 @@ const RewardsPage = () => {
     fetchClaimedRewards();
   }, []);
 
+  const handleAddRewardType = async () => {
+    if (!newRewardType.trim()) return;
+    
+    try {
+      await rewardsService.createRewardType(newRewardType.trim());
+      setNewRewardType("");
+      fetchRewardTypes();
+    } catch (error) {
+      console.error("Failed to add reward type:", error);
+    }
+  };
+
   return (
     <div className="flex-1 overflow-auto relative z-10">
       <Header title="Barangay Rewards Management" />
@@ -155,12 +181,30 @@ const RewardsPage = () => {
           />
         </motion.div>
         
-        <button
-          onClick={() => setAddModalOpen(true)}
-          className="mt-6 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg text-center mb-8"
-        >
-          + Add Reward
-        </button>
+        <div className="flex justify-between items-center mb-8">
+          <button
+            onClick={() => setAddModalOpen(true)}
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg text-center"
+          >
+            + Add Reward
+          </button>
+
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={newRewardType}
+              onChange={(e) => setNewRewardType(e.target.value)}
+              placeholder="New reward type"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+            />
+            <button
+              onClick={handleAddRewardType}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+            >
+              Add Type
+            </button>
+          </div>
+        </div>
 
         <div className="flex">
           {/* Sidebar */}
@@ -216,9 +260,10 @@ const RewardsPage = () => {
       </main>
 
       <AddRewardModal 
-        isOpen={modalOpen} 
-        onClose={() => setModalOpen(false)} 
-        onSave={handleSaveReward} 
+        isOpen={addModalOpen} 
+        onClose={() => setAddModalOpen(false)} 
+        onSave={handleSaveReward}
+        rewardTypes={rewardTypes}
       />
 
       <EditRewardModal
@@ -226,6 +271,7 @@ const RewardsPage = () => {
         onClose={() => setEditModalOpen(false)}
         onSave={handleUpdateReward}
         initialReward={currentReward}
+        rewardTypes={rewardTypes}
       />
     </div>
   );

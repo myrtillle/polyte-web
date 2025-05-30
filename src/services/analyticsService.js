@@ -132,18 +132,25 @@ export const analyticsService = {
   async fetchTopPuroksCollected(dateRange) {
     const fromDate = getRangeFilter(dateRange);
   
-    console.log("🏘 Fetching Top Puroks from:", fromDate);
-  
-    const { data, error } = await supabase.rpc("get_top_puroks_collected", { from_date: fromDate });
+    const { data, error } = await supabase.rpc("get_top_puroks_collected", {
+      from_date: fromDate,
+    });
   
     if (error) throw error;
-  
-    console.log("🏘 TopPuroks Fetched:", data?.length, "rows");
-    console.log("🏘 TopPuroks Data:", data);
-  
     return data;
   },  
   
+  async fetchTopPuroksByPolys(dateRange) {
+    const fromDate = getRangeFilter(dateRange);
+  
+    const { data, error } = await supabase.rpc("get_top_puroks_polypoints", {
+      from_date: fromDate,
+    });
+  
+    if (error) throw error;
+    return data;
+  },
+    
   async fetchTopUsersCollected(dateRange) {
     const fromDate = getRangeFilter(dateRange);
   

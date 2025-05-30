@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-const PurokLeaderboard = ({ topPuroks }) => {
+const PurokLeaderboard = ({ topPuroks, showPolys = false }) => {
   return (
     <motion.div
       className="bg-gray-800 bg-opacity-50 backdrop-blur-lg rounded-xl p-6 border border-gray-700 w-full"
@@ -15,7 +15,7 @@ const PurokLeaderboard = ({ topPuroks }) => {
             <tr className="text-gray-400 text-sm uppercase">
               <th className="text-left py-2 px-4">#</th>
               <th className="text-left py-2 px-4">Purok</th>
-              <th className="text-left py-2 px-4">Plastics (KG)</th>
+              <th className="text-left py-2 px-4">{showPolys ? "Poly Points" : "Plastics (KG)"}</th>
             </tr>
           </thead>
           <tbody>
@@ -25,7 +25,7 @@ const PurokLeaderboard = ({ topPuroks }) => {
                   {index + 1 === 1 ? "🥇" : index + 1 === 2 ? "🥈" : index + 1 === 3 ? "🥉" : index + 1}
                 </td>
                 <td className="py-2 px-4">{purok.purok}</td>
-                <td className="py-2 px-4">{purok.total_plastics}</td>
+                <td className="py-2 px-4">{showPolys ? purok.total_polypoints : purok.total_plastics}</td>
               </tr>
             ))}
           </tbody>
