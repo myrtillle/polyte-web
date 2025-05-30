@@ -189,7 +189,7 @@ const RewardsPage = () => {
             + Add Reward
           </button>
 
-          <div className="flex gap-2">
+          {/* <div className="flex gap-2">
             <input
               type="text"
               value={newRewardType}
@@ -203,7 +203,7 @@ const RewardsPage = () => {
             >
               Add Type
             </button>
-          </div>
+          </div> */}
         </div>
 
         <div className="flex">

@@ -79,13 +79,13 @@ const BrgyAnalyticsPage = () => {
         <div className="flex-1 overflow-auto relative z-10 bg-white">
           <main className="max-w-7xl mx-auto py-6 px-4 lg:px-8 space-y-8">
             {/* Overview Cards */}
-            <AnalyticsOverviewCards
+            {/* <AnalyticsOverviewCards
               stats={[
                 { name: "Plastics Collected", value: `${totalPlastics} KG`, change: plasticsChange },
                 { name: "Active Users", value: `${activeUsers}`, change: 0 },
                 { name: "Rewards Claimed", value: `${totalClaims}`, change: 0 },
               ]}
-            />
+            /> */}
     
             {/* Monthly Plastics Area Chart */}
             <motion.div

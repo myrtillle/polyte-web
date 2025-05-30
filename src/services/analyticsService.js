@@ -34,7 +34,8 @@ export const analyticsService = {
   async fetchTotalClaims() {
     const { data, error } = await supabase
       .from('claimed_rewards')
-      .select('id', { count: 'exact', head: true });
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'approved');
 
     if (error) throw error;
     return data?.count || 0;
@@ -150,7 +151,7 @@ export const analyticsService = {
     if (error) throw error;
     return data;
   },
-    
+
   async fetchTopUsersCollected(dateRange) {
     const fromDate = getRangeFilter(dateRange);
   
