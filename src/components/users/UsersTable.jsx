@@ -80,22 +80,22 @@ const UsersTable = ({ users, onRefresh }) => {
       </div>
 
       <div className="overflow-x-auto rounded-lg border border-green-700">
-        <table className="min-w-full bg-transparent text-green-50">
+        <table className="min-w-full bg-transparent text-gray-800">
           <thead className="bg-green-800/70 text-sm uppercase">
             <tr>
-              <th className="py-3 px-6 text-left cursor-pointer" onClick={() => handleSort("first_name")}>
+              <th className="py-3 px-6 text-left cursor-pointer text-white" onClick={() => handleSort("first_name")}>
 				Name {sortConfig.key === "first_name" && (sortConfig.direction === "asc" ? "↑" : "↓")}
 			  </th>
-              <th className="py-3 px-6 text-left cursor-pointer" onClick={() => handleSort("email")}>
+              <th className="py-3 px-6 text-left cursor-pointer text-white" onClick={() => handleSort("email")}>
 				Email {sortConfig.key === "email" && (sortConfig.direction === "asc" ? "↑" : "↓")}
 			  </th>
-              <th className="py-3 px-6 text-left cursor-pointer" onClick={() => handleSort("purok")}>
+              <th className="py-3 px-6 text-left cursor-pointer text-white" onClick={() => handleSort("purok")}>
 				Purok {sortConfig.key === "purok" && (sortConfig.direction === "asc" ? "↑" : "↓")}
 			  </th>
-              <th className="py-3 px-6 text-left cursor-pointer" onClick={() => handleSort("created_at")}>
+              <th className="py-3 px-6 text-left cursor-pointer text-white" onClick={() => handleSort("created_at")}>
 				Joined {sortConfig.key === "created_at" && (sortConfig.direction === "asc" ? "↑" : "↓")}
 			  </th>
-              <th className="py-3 px-6 text-left">Status</th>
+              <th className="py-3 px-6 text-left text-white">Status</th>
               <th className="py-3 px-6 text-left">&nbsp;</th>
             </tr>
           </thead>
@@ -114,7 +114,7 @@ const UsersTable = ({ users, onRefresh }) => {
                   <td className="py-3 px-6">{user.purok || "—"}</td>
                   <td className="py-3 px-6">{format(new Date(user.created_at), "PP")}</td>
                   <td className="py-3 px-6">
-                    <span className="inline-block px-3 py-1 text-xs bg-green-600 rounded-full">
+                    <span className="inline-block px-3 py-1 text-xs bg-green-600 rounded-full text-white">
                       Active
                     </span>
                   </td>
