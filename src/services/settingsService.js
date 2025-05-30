@@ -10,6 +10,7 @@ export const settingsService = {
         id,
         contact_name,
         created_at,
+        profile_photo_url,
         barangays ( name )
       `)
       .eq("id", userId)

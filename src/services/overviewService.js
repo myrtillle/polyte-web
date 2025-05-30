@@ -47,13 +47,13 @@ export const overviewService = {
   async fetchMonthlyOverview() {
     const { data, error } = await supabase.rpc("get_monthly_plastics_collected");
     if (error) throw error;
-
+  
     if (!data) return [];
-
+  
     return data.map((item) => ({
-      name: (item.month_name || item.month || "Unknown").toString().slice(0, 3),
-      sales: item.total_kg || 0,
-    }));      
+      month: item.month,        // XAxis expects 'month'
+      plastics: item.plastics,  // AreaChart expects 'plastics'
+    }));
   },
 
   async fetchPlasticTypeDistribution() {
@@ -77,12 +77,12 @@ export const overviewService = {
   },
 
   async fetchSacksPerPurok() {
-    const { data, error } = await supabase.rpc("get_top_puroks_collected");
+    const { data, error } = await supabase.rpc("get_purok_totals");
     if (error) throw error;
   
     return data.map((row) => ({
-      name: row.purok,
+      name: row.purok, // purok_name string
       value: row.total_plastics,
     }));
-  },
+  }  
 };

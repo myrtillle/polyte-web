@@ -24,7 +24,7 @@ const MonthlyPlasticsChart = ({ data }) => {
     >
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold text-gray-800">Monthly Plastics Collected</h3>
-        <select
+        {/* <select
           value={dateRange}
           onChange={handleChange}
           className="bg-gray-100 border border-gray-300 text-gray-700 px-3 py-1 text-sm rounded-md focus:outline-none"
@@ -32,7 +32,7 @@ const MonthlyPlasticsChart = ({ data }) => {
           <option value="week">This Week</option>
           <option value="month">This Month</option>
           <option value="year">This Year</option>
-        </select>
+        </select> */}
       </div>
 
       <ResponsiveContainer width="100%" height={300}>
@@ -43,7 +43,7 @@ const MonthlyPlasticsChart = ({ data }) => {
               <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <XAxis dataKey="name" stroke="#4B5563" />
+          <XAxis dataKey="month" stroke="#4B5563" />
           <YAxis stroke="#4B5563" />
           <CartesianGrid stroke="#E5E7EB" strokeDasharray="3 3" />
           <Tooltip
@@ -53,7 +53,7 @@ const MonthlyPlasticsChart = ({ data }) => {
           />
           <Area
             type="monotone"
-            dataKey="sales"
+            dataKey="plastics"
             stroke="#10B981"
             fillOpacity={1}
             fill="url(#colorSales)"

@@ -69,7 +69,7 @@ const UsersTable = ({ users, onRefresh }) => {
   return (
     <>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-white">Users List</h2>
+        <h2 className="text-xl font-semibold text-dark-gray">Users List</h2>
         <input
           type="text"
           placeholder="Search users..."
@@ -96,7 +96,7 @@ const UsersTable = ({ users, onRefresh }) => {
 				Joined {sortConfig.key === "created_at" && (sortConfig.direction === "asc" ? "↑" : "↓")}
 			  </th>
               <th className="py-3 px-6 text-left">Status</th>
-              <th className="py-3 px-6 text-left">Actions</th>
+              <th className="py-3 px-6 text-left">&nbsp;</th>
             </tr>
           </thead>
           <tbody>
@@ -118,16 +118,21 @@ const UsersTable = ({ users, onRefresh }) => {
                       Active
                     </span>
                   </td>
-                  <td className="py-3 px-6 flex gap-2">
-                    <button onClick={() => openModal("view", user)} className="text-blue-400 hover:text-blue-300">
-                      <Eye size={18} />
-                    </button>
-                    <button onClick={() => openModal("edit", user)} className="text-yellow-400 hover:text-yellow-300">
+                  <td className="py-3 px-6 flex">
+                    <div className="flex justify-center items-center">
+                      <button
+                        onClick={() => openModal("view", user)}
+                        className="text-blue-400 hover:text-blue-300"
+                      >
+                        <Eye size={18} />
+                      </button>
+                    </div>
+                    {/* <button onClick={() => openModal("edit", user)} className="text-yellow-400 hover:text-yellow-300">
                       <Edit size={18} />
                     </button>
                     <button onClick={() => openModal("delete", user)} className="text-red-500 hover:text-red-400">
                       <Trash2 size={18} />
-                    </button>
+                    </button> */}
                   </td>
                 </tr>
               ))

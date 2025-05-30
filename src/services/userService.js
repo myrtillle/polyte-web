@@ -4,11 +4,19 @@ export const userService = {
   async fetchAllUsers() {
     const { data, error } = await supabase
       .from("personal_users")
-      .select("*")
+      .select(`
+        *,
+        puroks (
+          purok_name
+        )
+      `)
       .order("created_at", { ascending: false });
 
     if (error) throw error;
-    return data;
+    return data.map((user) => ({
+      ...user,
+      purok: user.puroks?.purok_name || "—",
+    }));
   },
 
   async fetchUserStats() {
